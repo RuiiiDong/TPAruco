@@ -1,9 +1,3 @@
-//
-//  ArUco-OpenGL.cpp
-//
-//  Created by Jean-Marie Normand on 28/02/13.
-//  Copyright (c) 2013 Centrale Nantes. All rights reserved.
-//
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -27,7 +21,7 @@ using namespace std;
 float angle = 0.0f; // L'angle de rotation
 Marker sunMarker;
 Point2f sunPos = { 0.0, 0.0 };
-struct planet{
+struct planet {
     float speed;
     float radius;
     string name;
@@ -37,19 +31,18 @@ struct planet{
 
 bool isPosOk = false;
 
-//map<int, planet> planets = { {143, {1.0f, 1.0f, "Earth"}},  {81, {0.0f, 1.5f, "Sun"}}, {144,{0.5f, 1.2f, "Jupiter"}}};
-map<int, planet> planets = { {141, {2.0f, 0.2f, "Earth","textures/earth.jpg",1}},  
-    {217, {0.0f, 0.0f, "Sun","textures/sun.jpg",2}}, 
+map<int, planet> planets = { {141, {2.0f, 0.2f, "Earth","textures/earth.jpg",1}},
+    {217, {0.0f, 0.0f, "Sun","textures/sun.jpg",2}},
     {144,{1.0f, 0.4f, "Jupiter","textures/jupiter.jpg",3}} };
 
 // Constructor
 ArUco::ArUco(string intrinFileName, float markerSize) {
-   // Initializing attributes
-   m_IntrinsicFile= intrinFileName;
-   m_MarkerSize   = markerSize;
-   // read camera parameters if passed
-   m_CameraParams.readFromXMLFile(intrinFileName);
-  
+    // Initializing attributes
+    m_IntrinsicFile = intrinFileName;
+    m_MarkerSize = markerSize;
+    // read camera parameters if passed
+    m_CameraParams.readFromXMLFile(intrinFileName);
+
 }
 
 // Destructor
@@ -91,39 +84,39 @@ void drawTexturedSphere(float radius, int slices, int stacks) {
 }
 
 void ArUco::resizeCameraParams(cv::Size newSize) {
-	m_CameraParams.resize(newSize);
+    m_CameraParams.resize(newSize);
 }
 
 // Detect marker and draw things
 void ArUco::doWork(Mat inputImg) {
-   m_InputImage   = inputImg;
-   m_GlWindowSize = m_InputImage.size();
-   m_CameraParams.resize(m_InputImage.size());
-   resize(m_GlWindowSize.width, m_GlWindowSize.height);
+    m_InputImage = inputImg;
+    m_GlWindowSize = m_InputImage.size();
+    m_CameraParams.resize(m_InputImage.size());
+    resize(m_GlWindowSize.width, m_GlWindowSize.height);
 }
 
 // Draw axis function
 void ArUco::drawAxis(float axisSize) {
-   // X
-   glColor3f (1,0,0);
-   glBegin(GL_LINES);
-   glVertex3f(0.0f, 0.0f, 0.0f); // origin of the line
-   glVertex3f(axisSize,0.0f, 0.0f); // ending point of the line
-   glEnd( );
-   
-   // Y
-   glColor3f (0,1,0);
-   glBegin(GL_LINES);
-   glVertex3f(0.0f, 0.0f, 0.0f); // origin of the line
-   glVertex3f(0.0f, axisSize, 0.0f); // ending point of the line
-   glEnd( );
-   
-   // Z
-   glColor3f (0,0,1);
-   glBegin(GL_LINES);
-   glVertex3f(0.0f, 0.0f, 0.0f); // origin of the line
-   glVertex3f(0.0f, 0.0f, axisSize); // ending point of the line
-   glEnd( );
+    // X
+    glColor3f(1, 0, 0);
+    glBegin(GL_LINES);
+    glVertex3f(0.0f, 0.0f, 0.0f); // origin of the line
+    glVertex3f(axisSize, 0.0f, 0.0f); // ending point of the line
+    glEnd();
+
+    // Y
+    glColor3f(0, 1, 0);
+    glBegin(GL_LINES);
+    glVertex3f(0.0f, 0.0f, 0.0f); // origin of the line
+    glVertex3f(0.0f, axisSize, 0.0f); // ending point of the line
+    glEnd();
+
+    // Z
+    glColor3f(0, 0, 1);
+    glBegin(GL_LINES);
+    glVertex3f(0.0f, 0.0f, 0.0f); // origin of the line
+    glVertex3f(0.0f, 0.0f, axisSize); // ending point of the line
+    glEnd();
 }
 
 void ArUco::drawWireCone(GLdouble base, GLdouble height, GLint slices, GLint stacks) {
@@ -146,7 +139,7 @@ void ArUco::drawWireCone(GLdouble base, GLdouble height, GLint slices, GLint sta
         glEnd();
     }
 
-// Draw the base of the cone (a circle)
+    // Draw the base of the cone (a circle)
     glBegin(GL_LINE_LOOP);
     for (i = 0; i < slices; i++) {
         float angle = (2.0f * 3.141592 * i) / slices;
@@ -157,7 +150,7 @@ void ArUco::drawWireCone(GLdouble base, GLdouble height, GLint slices, GLint sta
     glEnd();
 }
 
-void drawSolidSphere(GLdouble radius, GLint slices, GLint stacks){ 
+void drawSolidSphere(GLdouble radius, GLint slices, GLint stacks) {
     for (GLint i = 0; i < slices; i++) {
         GLfloat lat0 = 3.141592 * (-0.5 + (GLfloat)(i) / slices);
         GLfloat lat1 = 3.141592 * (-0.5 + (GLfloat)(i + 1) / slices);
@@ -183,47 +176,47 @@ void drawSolidSphere(GLdouble radius, GLint slices, GLint stacks){
 // Fonction qui dessine un cube de différentes manières (type)
 void ArUco::drawBox(GLfloat size, GLenum type)
 {
-		static const GLfloat n[6][3] =
-		{
-		  {-1.0, 0.0, 0.0},
-		  {0.0, 1.0, 0.0},
-		  {1.0, 0.0, 0.0},
-		  {0.0, -1.0, 0.0},
-		  {0.0, 0.0, 1.0},
-		  {0.0, 0.0, -1.0}
-		};
-		static const GLint faces[6][4] =
-		{
-		  {0, 1, 2, 3},
-		  {3, 2, 6, 7},
-		  {7, 6, 5, 4},
-		  {4, 5, 1, 0},
-		  {5, 6, 2, 1},
-		  {7, 4, 0, 3}
-		};
-		GLfloat v[8][3];
-		GLint i;
+    static const GLfloat n[6][3] =
+    {
+      {-1.0, 0.0, 0.0},
+      {0.0, 1.0, 0.0},
+      {1.0, 0.0, 0.0},
+      {0.0, -1.0, 0.0},
+      {0.0, 0.0, 1.0},
+      {0.0, 0.0, -1.0}
+    };
+    static const GLint faces[6][4] =
+    {
+      {0, 1, 2, 3},
+      {3, 2, 6, 7},
+      {7, 6, 5, 4},
+      {4, 5, 1, 0},
+      {5, 6, 2, 1},
+      {7, 4, 0, 3}
+    };
+    GLfloat v[8][3];
+    GLint i;
 
-		v[0][0] = v[1][0] = v[2][0] = v[3][0] = -size / 2;
-		v[4][0] = v[5][0] = v[6][0] = v[7][0] = size / 2;
-		v[0][1] = v[1][1] = v[4][1] = v[5][1] = -size / 2;
-		v[2][1] = v[3][1] = v[6][1] = v[7][1] = size / 2;
-		v[0][2] = v[3][2] = v[4][2] = v[7][2] = -size / 2;
-		v[1][2] = v[2][2] = v[5][2] = v[6][2] = size / 2;
+    v[0][0] = v[1][0] = v[2][0] = v[3][0] = -size / 2;
+    v[4][0] = v[5][0] = v[6][0] = v[7][0] = size / 2;
+    v[0][1] = v[1][1] = v[4][1] = v[5][1] = -size / 2;
+    v[2][1] = v[3][1] = v[6][1] = v[7][1] = size / 2;
+    v[0][2] = v[3][2] = v[4][2] = v[7][2] = -size / 2;
+    v[1][2] = v[2][2] = v[5][2] = v[6][2] = size / 2;
 
-		for (i = 5; i >= 0; i--) {
-			glBegin(type);
-			glNormal3fv(&n[i][0]);
-			glVertex3fv(&v[faces[i][0]][0]);
-			glVertex3fv(&v[faces[i][1]][0]);
-			glVertex3fv(&v[faces[i][2]][0]);
-			glVertex3fv(&v[faces[i][3]][0]);
-			glEnd();
-		}
+    for (i = 5; i >= 0; i--) {
+        glBegin(type);
+        glNormal3fv(&n[i][0]);
+        glVertex3fv(&v[faces[i][0]][0]);
+        glVertex3fv(&v[faces[i][1]][0]);
+        glVertex3fv(&v[faces[i][2]][0]);
+        glVertex3fv(&v[faces[i][3]][0]);
+        glEnd();
+    }
 }
 
-void drawPlanet(double modelview_matrix[16], Marker m_Marker, float m_MarkerSize, bool &hasSun, bool isPosOk) {
-    planet p= planets[m_Marker.id];
+void drawPlanet(double modelview_matrix[16], Marker m_Marker, float m_MarkerSize, bool& hasSun, bool isPosOk) {
+    planet p = planets[m_Marker.id];
 
     if (hasSun && p.name != "Sun" && isPosOk) {
         m_Marker = sunMarker;
@@ -232,31 +225,31 @@ void drawPlanet(double modelview_matrix[16], Marker m_Marker, float m_MarkerSize
     m_Marker.glGetModelViewMatrix(modelview_matrix);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-// on charge cette matrice pour se placer dans le repere de ce marqueur [m] 
-glLoadMatrixd(modelview_matrix);
+    // on charge cette matrice pour se placer dans le repere de ce marqueur [m] 
+    glLoadMatrixd(modelview_matrix);
 
-loadTexture(p.textureFile.c_str(), p.textureID);//string ->const char*
-glBindTexture(GL_TEXTURE_2D, p.textureID);
+    loadTexture(p.textureFile.c_str(), p.textureID);//string ->const char*
+    glBindTexture(GL_TEXTURE_2D, p.textureID);
 
-// On se deplace sur Z de la moitie du marqueur pour dessiner "sur" le plan du marqueur
-glPushMatrix();
+    // On se deplace sur Z de la moitie du marqueur pour dessiner "sur" le plan du marqueur
+    glPushMatrix();
 
-glTranslatef(0, 0, m_MarkerSize / 2);
-if (isPosOk && hasSun) {
-    if (p.speed != 0) {
-        angle += p.speed;
-        if (angle >= 360.0f) {
-            angle -= 360.0f;
+    glTranslatef(0, 0, m_MarkerSize / 2);
+    if (isPosOk && hasSun) {
+        if (p.speed != 0) {
+            angle += p.speed;
+            if (angle >= 360.0f) {
+                angle -= 360.0f;
+            }
         }
+        glRotatef(angle, 0.0f, 0.0f, 1.0f);  // Rotate around Y-axis
+        glTranslatef(p.radius, 0.0f, 0.0f);  // Move the sphere along the X-axis by the radius
     }
-    glRotatef(angle, 0.0f, 0.0f, 1.0f);  // Rotate around Y-axis
-    glTranslatef(p.radius, 0.0f, 0.0f);  // Move the sphere along the X-axis by the radius
-}
 
-//drawSolidSphere(m_MarkerSize / 2, 20, 20);
-drawTexturedSphere(m_MarkerSize / 2, 20, 20);
+    //drawSolidSphere(m_MarkerSize / 2, 20, 20);
+    drawTexturedSphere(m_MarkerSize / 2, 20, 20);
 
-glPopMatrix();
+    glPopMatrix();
 }
 
 // Drawing function
@@ -306,7 +299,7 @@ void ArUco::drawScene() {
     glDisable(GL_DEPTH_TEST);
 
     bool hasSun = false;
-    
+
     // Check if we have a marker with the name "Sun"
     for (unsigned int m = 0; m < m_Markers.size(); m++)
     {
@@ -316,86 +309,83 @@ void ArUco::drawScene() {
             sunPos = m_Markers[m].getCenter();
             break;
         }
-   }
-   
-   for (unsigned int m = 0; m < m_Markers.size(); m++)
-   {
-      cout << "Checking marker ID: " << m_Markers[m].id << endl;
-      for (Marker marker : m_Markers) {
-          if (marker != m_Markers[m] && planets[marker.id].name != "Sun") {
-              if ((planets[m_Markers[m].id].radius > planets[marker.id].radius && norm(marker.getCenter() - sunPos) > norm(m_Markers[m].getCenter() - sunPos))
-                  || (planets[m_Markers[m].id].radius < planets[marker.id].radius && norm(marker.getCenter() - sunPos) < norm(m_Markers[m].getCenter() - sunPos)))
-              {
-                  isPosOk = false;
-                
-              }
-              else {
-                  isPosOk = true;
-              }
-              //cout << " here > " << (norm(marker.getCenter() - sunPos) > norm(m_Markers[m].getCenter() - sunPos)) << endl;
-              //cout << " here < " << (norm(marker.getCenter() - sunPos) < norm(m_Markers[m].getCenter() - sunPos)) << endl;
-              //cout << isPosOk << endl;
-          }
-      }
-      drawPlanet(modelview_matrix, m_Markers[m], m_MarkerSize, hasSun, isPosOk);
-   }
-   
-   // Desactivation du depth test
-   glDisable(GL_DEPTH_TEST);
+    }
+
+    for (unsigned int m = 0; m < m_Markers.size(); m++)
+    {
+        cout << "Checking marker ID: " << m_Markers[m].id << endl;
+        for (Marker marker : m_Markers) {
+            if (marker != m_Markers[m] && planets[marker.id].name != "Sun") {
+                if ((planets[m_Markers[m].id].radius > planets[marker.id].radius && norm(marker.getCenter() - sunPos) > norm(m_Markers[m].getCenter() - sunPos))
+                    || (planets[m_Markers[m].id].radius < planets[marker.id].radius && norm(marker.getCenter() - sunPos) < norm(m_Markers[m].getCenter() - sunPos)))
+                {
+                    isPosOk = false;
+
+                }
+                else {
+                    isPosOk = true;
+                }
+            }
+        }
+        drawPlanet(modelview_matrix, m_Markers[m], m_MarkerSize, hasSun, isPosOk);
+    }
+
+    // Desactivation du depth test
+    glDisable(GL_DEPTH_TEST);
 }
 
 
 
 // Idle function
 void ArUco::idle(Mat newImage) {
-   // Getting new image
-   m_InputImage = newImage.clone();
-  
-   // Undistort image based on distorsion parameters
-   m_UndInputImage.create(m_InputImage.size(),CV_8UC3);
-   
-   //transform color that by default is BGR to RGB because windows systems do not allow reading BGR images with opengl properly
-   cv::cvtColor(m_InputImage,m_InputImage,cv::COLOR_BGR2RGB);
-   
-   //remove distorion in image ==> does not work very well (the YML file is not that of my camera)
-   //cv::undistort(m_InputImage,m_UndInputImage, m_CameraParams.CameraMatrix, m_CameraParams.Distorsion);
-   m_UndInputImage = m_InputImage.clone();
-   
-   //resize the image to the size of the GL window
-   cv::resize(m_UndInputImage,m_ResizedImage,m_GlWindowSize);
+    // Getting new image
+    m_InputImage = newImage.clone();
 
-   //detect markers
-   m_PPDetector.detect(m_ResizedImage, m_Markers, m_CameraParams, m_MarkerSize, false);
+    // Undistort image based on distorsion parameters
+    m_UndInputImage.create(m_InputImage.size(), CV_8UC3);
+
+    //transform color that by default is BGR to RGB because windows systems do not allow reading BGR images with opengl properly
+    cv::cvtColor(m_InputImage, m_InputImage, cv::COLOR_BGR2RGB);
+
+    //remove distorion in image ==> does not work very well (the YML file is not that of my camera)
+    //cv::undistort(m_InputImage,m_UndInputImage, m_CameraParams.CameraMatrix, m_CameraParams.Distorsion);
+    m_UndInputImage = m_InputImage.clone();
+
+    //resize the image to the size of the GL window
+    cv::resize(m_UndInputImage, m_ResizedImage, m_GlWindowSize);
+
+    //detect markers
+    m_PPDetector.detect(m_ResizedImage, m_Markers, m_CameraParams, m_MarkerSize, false);
 
 }
 
 // Resize function
 void ArUco::resize(GLsizei iWidth, GLsizei iHeight) {
-   m_GlWindowSize=Size(iWidth,iHeight);
-   
-   //not all sizes are allowed. OpenCv images have padding at the end of each line in these that are not aligned to 4 bytes
-   if (iWidth*3%4!=0) {
-      iWidth+=iWidth*3%4;//resize to avoid padding
-      resize(iWidth, m_GlWindowSize.height);
-   }
-   else {
-      //resize the image to the size of the GL window
-      if (m_UndInputImage.rows!=0)
-         cv::resize(m_UndInputImage, m_ResizedImage, m_GlWindowSize);
-   }
+    m_GlWindowSize = Size(iWidth, iHeight);
+
+    //not all sizes are allowed. OpenCv images have padding at the end of each line in these that are not aligned to 4 bytes
+    if (iWidth * 3 % 4 != 0) {
+        iWidth += iWidth * 3 % 4;//resize to avoid padding
+        resize(iWidth, m_GlWindowSize.height);
+    }
+    else {
+        //resize the image to the size of the GL window
+        if (m_UndInputImage.rows != 0)
+            cv::resize(m_UndInputImage, m_ResizedImage, m_GlWindowSize);
+    }
 
 }
 
 // Test using ArUco to display a 3D cube in OpenCV
 void ArUco::draw3DCube(cv::Mat img, int markerInd) {
-   if(m_Markers.size() > markerInd) {
-      aruco::CvDrawingUtils::draw3dCube(img, m_Markers[markerInd], m_CameraParams); 
-   }
+    if (m_Markers.size() > markerInd) {
+        aruco::CvDrawingUtils::draw3dCube(img, m_Markers[markerInd], m_CameraParams);
+    }
 }
 
 void ArUco::draw3DAxis(cv::Mat img, int markerInd) {
-   if(m_Markers.size() > markerInd) {
-      aruco::CvDrawingUtils::draw3dAxis(img, m_Markers[markerInd], m_CameraParams); 
-   }
-   
+    if (m_Markers.size() > markerInd) {
+        aruco::CvDrawingUtils::draw3dAxis(img, m_Markers[markerInd], m_CameraParams);
+    }
+
 }

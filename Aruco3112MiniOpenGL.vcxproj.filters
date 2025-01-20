@@ -24,6 +24,9 @@
     <ClCompile Include="aruco_test_gl.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="ArUco-1.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ArUco-OpenGL.h">

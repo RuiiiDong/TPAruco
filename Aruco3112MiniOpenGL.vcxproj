@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ArUco-1.cpp" />
     <ClCompile Include="ArUco-OpenGL.cpp" />
     <ClCompile Include="aruco_test_gl.cpp" />
     <ClCompile Include="main.cpp" />
